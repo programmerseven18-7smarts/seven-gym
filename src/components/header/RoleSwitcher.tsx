@@ -69,7 +69,7 @@ const RoleSwitcher: React.FC = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+        className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white/80 px-3 py-2 text-sm font-medium text-gray-700 shadow-theme-xs transition-colors hover:border-brand-200 hover:bg-brand-50/80 dark:border-brand-500/15 dark:bg-white/[0.04] dark:text-gray-300 dark:hover:border-brand-500/30 dark:hover:bg-brand-500/10"
       >
         <div className="relative">
           <Image
@@ -91,11 +91,11 @@ const RoleSwitcher: React.FC = () => {
             {roleLabels[currentRole]}
           </p>
         </div>
-        <SwitchIcon className="h-4 w-4 text-gray-500" />
+        <SwitchIcon className="h-4 w-4 text-brand-600 dark:text-brand-300" />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 z-50 mt-2 w-[360px] rounded-xl border border-gray-200 bg-white shadow-theme-lg dark:border-gray-800 dark:bg-gray-900">
+        <div className="absolute right-0 z-50 mt-2 w-[360px] rounded-xl border border-brand-100 bg-white shadow-theme-lg dark:border-brand-500/15 dark:bg-[#0b1117]">
           <div className="border-b border-gray-200 p-4 dark:border-gray-800">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -110,7 +110,7 @@ const RoleSwitcher: React.FC = () => {
                 {roleLabels[currentRole]}
               </span>
             </div>
-            <div className="mt-3 rounded-lg bg-gray-50 p-3 dark:bg-white/[0.04]">
+            <div className="mt-3 rounded-lg border border-brand-100 bg-brand-50/70 p-3 dark:border-brand-500/15 dark:bg-brand-500/[0.08]">
               <p className="text-xs text-gray-500 dark:text-gray-400">Token</p>
               <p className="mt-1 truncate font-mono text-xs text-gray-700 dark:text-gray-300">
                 {sessionToken}
@@ -171,13 +171,13 @@ const RoleSwitcher: React.FC = () => {
           <div className="flex gap-2 border-t border-gray-200 p-3 dark:border-gray-800">
             <button
               onClick={refreshSession}
-              className="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+              className="flex-1 rounded-lg border border-brand-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-brand-50 dark:border-brand-500/20 dark:text-gray-300 dark:hover:bg-brand-500/10"
             >
               Refresh Token
             </button>
             <button
               onClick={logout}
-              className="flex-1 rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900"
+              className="flex-1 rounded-lg bg-gradient-to-r from-brand-600 to-brand-500 px-3 py-2 text-sm font-medium text-white shadow-[0_10px_24px_rgba(0,230,118,0.24)] hover:from-brand-700 hover:to-brand-600"
             >
               Logout
             </button>

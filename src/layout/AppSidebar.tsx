@@ -190,7 +190,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`admin-sidebar fixed left-0 top-0 z-50 mt-16 flex h-screen flex-col border-r border-gray-200 bg-white px-5 text-gray-900 transition-all duration-300 ease-in-out dark:border-gray-800 dark:bg-gray-900 lg:mt-0 ${
+      className={`admin-sidebar fixed left-0 top-0 z-50 mt-16 flex h-screen flex-col border-r border-emerald-100/80 bg-[#fbfffd] px-5 text-gray-900 shadow-[18px_0_70px_rgba(0,230,118,0.05)] transition-all duration-300 ease-in-out dark:border-slate-700/70 dark:bg-[#0f172a] dark:shadow-[18px_0_80px_rgba(15,23,42,0.24)] lg:mt-0 ${
         isExpanded || isMobileOpen ? "w-[290px]" : isHovered ? "w-[290px]" : "w-[90px]"
       } ${isMobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
@@ -204,18 +204,18 @@ const AppSidebar: React.FC = () => {
         <Link href="/" className="block">
           {isSidebarOpen ? (
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-400 via-brand-500 to-blue-light-400 shadow-[0_12px_30px_rgba(0,230,118,0.32)]">
                 <DumbbellIcon className="h-6 w-6 text-white" />
               </div>
-              <span className="text-2xl font-extrabold tracking-tight leading-none">
-                <span className="text-emerald-600">Seven</span>{" "}
-                <span className="text-amber-500 drop-shadow-[0_1px_1px_rgba(0,0,0,0.18)]">
+              <span className="text-2xl font-extrabold tracking-normal leading-none">
+                <span className="text-brand-700 dark:text-brand-300">Seven</span>{" "}
+                <span className="text-amber-500 drop-shadow-[0_1px_10px_rgba(255,159,28,0.35)]">
                   Gym
                 </span>
               </span>
             </div>
           ) : (
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-400 via-brand-500 to-blue-light-400 shadow-[0_12px_30px_rgba(0,230,118,0.32)]">
               <DumbbellIcon className="h-6 w-6 text-white" />
             </div>
           )}
