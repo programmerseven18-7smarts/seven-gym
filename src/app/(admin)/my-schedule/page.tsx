@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { mockPTSessions, mockTrainers, mockMembers } from "@/data/mockData";
+import { mockPTSessions, mockTrainers } from "@/data/mockData";
 import { CalendarIcon, ClockIcon, UserIcon, CheckIcon } from "@/icons/gym-icons";
 
 export default function MySchedulePage() {

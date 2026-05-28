@@ -190,6 +190,21 @@
   body {
     @apply relative font-normal font-outfit z-1 bg-gray-50;
   }
+  body.pos-fullscreen-active {
+    overflow: hidden;
+  }
+  body.pos-fullscreen-active .admin-header,
+  body.pos-fullscreen-active .admin-sidebar,
+  body.pos-fullscreen-active .admin-backdrop {
+    display: none !important;
+  }
+  body.pos-fullscreen-active .admin-main-content {
+    margin-left: 0 !important;
+  }
+  body.pos-fullscreen-active .admin-page-content {
+    max-width: none !important;
+    padding: 0 !important;
+  }
 }
 
 @utility menu-item {

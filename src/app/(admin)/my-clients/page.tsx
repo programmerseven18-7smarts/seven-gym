@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { mockMembers, mockPTSessions, mockTrainers } from "@/data/mockData";
-import { UserIcon, CalendarIcon, TrendingUpIcon, StarIcon } from "@/icons/gym-icons";
+import { mockMembers, mockPTSessions } from "@/data/mockData";
+import { UserIcon } from "@/icons/gym-icons";
 
 export default function MyClientsPage() {
   const [selectedClient, setSelectedClient] = useState<string | null>(null);

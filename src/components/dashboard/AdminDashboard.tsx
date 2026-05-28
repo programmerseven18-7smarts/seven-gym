@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
+import Link from "next/link";
+import { useRole } from "@/context/RoleContext";
+import { getBranchOperationalSnapshot } from "@/data/operationalData";
 import {
   dashboardStats,
-  members,
-  checkIns,
   gymClasses,
   trainers,
   transactions,
@@ -15,8 +16,10 @@ import RevenueChart from "./charts/RevenueChart";
 import AttendanceChart from "./charts/AttendanceChart";
 
 const AdminDashboard: React.FC = () => {
-  const todayCheckIns = checkIns.filter((c) => c.date === "2025-01-20");
-  const activeMembers = members.filter((m) => m.membershipStatus === "active");
+  const { activeBranch, currentRole } = useRole();
+  const branchSnapshot = getBranchOperationalSnapshot(activeBranch.id);
+  const todayCheckIns = branchSnapshot.scopedCheckIns;
+  const activeMembers = branchSnapshot.scopedMembers.filter((m) => m.membershipStatus === "active");
   const todayClasses = gymClasses.filter((c) => c.day === "Monday");
   const recentTransactions = transactions.slice(0, 5);
 
@@ -28,6 +31,109 @@ const AdminDashboard: React.FC = () => {
     }).format(amount);
   };
 
+  if (currentRole === "staff") {
+    const lowStockItems = branchSnapshot.scopedInventory.filter((item) => item.stock <= item.minStock).slice(0, 5);
+    const pendingTransactions = branchSnapshot.scopedTransactions.filter((transaction) => transaction.status === "pending");
+
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Dashboard Operasional
+          </h1>
+          <p className="mt-1 text-gray-500 dark:text-gray-400">
+            Ringkasan kerja cabang hari ini / {activeBranch.name}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Member Sedang Gym</p>
+            <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">{branchSnapshot.activeInGym}</p>
+            <Link href="/check-in/live" className="mt-3 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700">Lihat check-in</Link>
+          </div>
+          <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Shift Kasir</p>
+            <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">{branchSnapshot.openShift ? "Open" : "Closed"}</p>
+            <Link href="/finance/cash-shifts" className="mt-3 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700">Kelola shift</Link>
+          </div>
+          <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Invoice Pending</p>
+            <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">{pendingTransactions.length}</p>
+            <Link href="/payments/transactions" className="mt-3 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700">Cek transaksi</Link>
+          </div>
+          <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+            <p className="text-sm text-gray-500 dark:text-gray-400">Stok Menipis</p>
+            <p className="mt-2 text-2xl font-bold text-gray-900 dark:text-white">{branchSnapshot.lowStock}</p>
+            <Link href="/inventory/stock" className="mt-3 inline-block text-sm font-medium text-emerald-600 hover:text-emerald-700">Cek stok</Link>
+          </div>
+        </div>
+
+        <div className="grid gap-6 xl:grid-cols-3">
+          <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-semibold text-gray-900 dark:text-white">Antrian Check-In</h2>
+              <Link href="/check-in/scan" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">Scan QR</Link>
+            </div>
+            <div className="space-y-3">
+              {todayCheckIns.slice(0, 5).map((checkin) => (
+                <div key={checkin.id} className="flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-800/60">
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-white">{checkin.memberName}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{checkin.time} / {checkin.gate}</p>
+                  </div>
+                  <Badge color={checkin.checkoutTime ? "light" : "success"} size="sm">
+                    {checkin.checkoutTime ? "Selesai" : "Aktif"}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-semibold text-gray-900 dark:text-white">Renewal Cepat</h2>
+              <Link href="/members/membership" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">Membership</Link>
+            </div>
+            <div className="space-y-3">
+              {branchSnapshot.scopedMembers.slice(0, 5).map((member) => (
+                <div key={member.id} className="flex items-center justify-between rounded-lg border border-gray-200 p-3 dark:border-gray-800">
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-white">{member.name}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{member.membershipType} / {member.membershipEnd}</p>
+                  </div>
+                  <Badge color={member.membershipStatus === "active" ? "success" : "warning"} size="sm">
+                    {member.membershipStatus}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-semibold text-gray-900 dark:text-white">Stok Prioritas</h2>
+              <Link href="/inventory/inbound" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">Restock</Link>
+            </div>
+            <div className="space-y-3">
+              {(lowStockItems.length ? lowStockItems : branchSnapshot.scopedInventory.slice(0, 5)).map((item) => (
+                <div key={item.id} className="flex items-center justify-between rounded-lg bg-gray-50 p-3 dark:bg-gray-800/60">
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-white">{item.name}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{item.sku}</p>
+                  </div>
+                  <Badge color={item.stock <= item.minStock ? "warning" : "success"} size="sm">
+                    {item.stock}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -36,7 +142,7 @@ const AdminDashboard: React.FC = () => {
           Dashboard
         </h1>
         <p className="mt-1 text-gray-500 dark:text-gray-400">
-          Selamat datang di Seven Gym Management System
+          Selamat datang di Seven Gym Management System / {activeBranch.name}
         </p>
       </div>
 
@@ -58,7 +164,7 @@ const AdminDashboard: React.FC = () => {
           <div className="mt-4">
             <p className="text-sm text-gray-500 dark:text-gray-400">Pendapatan Hari Ini</p>
             <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
-              {formatCurrency(dashboardStats.todayRevenue)}
+              {formatCurrency(branchSnapshot.revenue)}
             </p>
           </div>
         </div>
@@ -79,8 +185,8 @@ const AdminDashboard: React.FC = () => {
           <div className="mt-4">
             <p className="text-sm text-gray-500 dark:text-gray-400">Member Aktif</p>
             <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
-              {dashboardStats.activeMembers}
-              <span className="text-sm font-normal text-gray-500"> / {dashboardStats.totalMembers}</span>
+              {branchSnapshot.activeMembers}
+              <span className="text-sm font-normal text-gray-500"> / {branchSnapshot.totalMembers}</span>
             </p>
           </div>
         </div>
@@ -101,7 +207,7 @@ const AdminDashboard: React.FC = () => {
           <div className="mt-4">
             <p className="text-sm text-gray-500 dark:text-gray-400">Check-in Hari Ini</p>
             <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
-              {dashboardStats.todayCheckins}
+              {branchSnapshot.checkInsToday}
               <span className="text-sm font-normal text-gray-500"> avg {dashboardStats.avgDailyCheckins}</span>
             </p>
           </div>
@@ -123,7 +229,7 @@ const AdminDashboard: React.FC = () => {
           <div className="mt-4">
             <p className="text-sm text-gray-500 dark:text-gray-400">Sesi PT Hari Ini</p>
             <p className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">
-              {dashboardStats.ptSessions}
+              {branchSnapshot.ptSessions}
               <span className="text-sm font-normal text-gray-500"> sessions</span>
             </p>
           </div>
@@ -229,9 +335,9 @@ const AdminDashboard: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Transaksi Terakhir
               </h3>
-              <a href="/transactions/history" className="text-sm font-medium text-brand-500 hover:text-brand-600">
+              <Link href="/payments/transactions" className="text-sm font-medium text-brand-500 hover:text-brand-600">
                 Lihat Semua
-              </a>
+              </Link>
             </div>
             <div className="space-y-4">
               {recentTransactions.map((tx) => (

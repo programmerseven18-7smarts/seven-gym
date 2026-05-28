@@ -399,3 +399,163 @@ export const SwitchIcon = ({ className }: { className?: string }) => (
     />
   </svg>
 );
+
+type GymIconProps = { className?: string };
+
+export const ClockIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M12 7V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const CalendarIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M8 3V7M16 3V7M4 10H20M6 5H18C19.1046 5 20 5.89543 20 7V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V7C4 5.89543 4.89543 5 6 5Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const UserGroupIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M16 19C16 16.7909 14.2091 15 12 15H7C4.79086 15 3 16.7909 3 19M21 19C21 17.1362 19.7252 15.5701 18 15.126M15 5.17C16.1652 5.58254 17 6.69378 17 8C17 9.30622 16.1652 10.4175 15 10.83M12.5 8C12.5 10.2091 10.7091 12 8.5 12C6.29086 12 4.5 10.2091 4.5 8C4.5 5.79086 6.29086 4 8.5 4C10.7091 4 12.5 5.79086 12.5 8Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const UserIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M20 21C20 18.2386 16.4183 16 12 16C7.58172 16 4 18.2386 4 21M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const StarIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M12 3L14.781 8.633L21 9.536L16.5 13.923L17.562 20.117L12 17.192L6.438 20.117L7.5 13.923L3 9.536L9.219 8.633L12 3Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const CheckIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M20 6L9 17L4 12"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const CreditCardIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M3 9H21M7 15H9M12 15H15M5 5H19C20.1046 5 21 5.89543 21 7V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7C3 5.89543 3.89543 5 5 5Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const TrendingUpIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M3 17L9 11L13 15L21 7M21 7H15M21 7V13"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const PackageIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M3 7.5L12 12.5L21 7.5M12 12.5V21M5 5.5L12 2L19 5.5C20.1046 6.05228 21 7.39543 21 8.5V15.5C21 16.6046 20.1046 17.9477 19 18.5L12 22L5 18.5C3.89543 17.9477 3 16.6046 3 15.5V8.5C3 7.39543 3.89543 6.05228 5 5.5Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const AlertIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M12 9V13M12 17H12.01M10.29 4.86L2.82 18C2.06 19.33 3.02 21 4.55 21H19.45C20.98 21 21.94 19.33 21.18 18L13.71 4.86C12.95 3.53 11.05 3.53 10.29 4.86Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const SettingsIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M12 15.5C13.933 15.5 15.5 13.933 15.5 12C15.5 10.067 13.933 8.5 12 8.5C10.067 8.5 8.5 10.067 8.5 12C8.5 13.933 10.067 15.5 12 15.5Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M19.4 15A1.65 1.65 0 0 0 19.73 16.82L19.79 16.88A2 2 0 1 1 16.96 19.71L16.9 19.65A1.65 1.65 0 0 0 15.08 19.32A1.65 1.65 0 0 0 14.08 20.83V21A2 2 0 1 1 10.08 21V20.91A1.65 1.65 0 0 0 9 19.4A1.65 1.65 0 0 0 7.18 19.73L7.12 19.79A2 2 0 1 1 4.29 16.96L4.35 16.9A1.65 1.65 0 0 0 4.68 15.08A1.65 1.65 0 0 0 3.17 14.08H3A2 2 0 1 1 3 10.08H3.09A1.65 1.65 0 0 0 4.6 9A1.65 1.65 0 0 0 4.27 7.18L4.21 7.12A2 2 0 1 1 7.04 4.29L7.1 4.35A1.65 1.65 0 0 0 8.92 4.68H9A1.65 1.65 0 0 0 10 3.17V3A2 2 0 1 1 14 3V3.09A1.65 1.65 0 0 0 15 4.6A1.65 1.65 0 0 0 16.82 4.27L16.88 4.21A2 2 0 1 1 19.71 7.04L19.65 7.1A1.65 1.65 0 0 0 19.32 8.92V9A1.65 1.65 0 0 0 20.83 10H21A2 2 0 1 1 21 14H20.91A1.65 1.65 0 0 0 19.4 15Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const ShieldIcon = ({ className }: GymIconProps) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M9 12L11 14L15 10"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);

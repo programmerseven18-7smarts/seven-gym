@@ -1,21 +1,22 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import { members, gymClasses, challenges, promos, rewards } from "@/data/mockData";
 import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
+
+const qrPattern = [
+  true, true, true, false, true,
+  true, false, true, true, false,
+  true, true, false, true, true,
+  false, true, true, false, true,
+  true, false, true, true, true,
+];
 
 const MemberDashboard: React.FC = () => {
   // Simulate current member (first active member)
   const currentMember = members[0];
   const todayClasses = gymClasses.filter((c) => c.day === "Monday");
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(amount);
-  };
 
   const getDaysRemaining = (endDate: string) => {
     const end = new Date(endDate);
@@ -115,7 +116,7 @@ const MemberDashboard: React.FC = () => {
                   <div
                     key={i}
                     className={`w-6 h-6 rounded-sm ${
-                      Math.random() > 0.3 ? "bg-gray-900" : "bg-white"
+                      qrPattern[i] ? "bg-gray-900" : "bg-white"
                     }`}
                   />
                 ))}
@@ -210,7 +211,7 @@ const MemberDashboard: React.FC = () => {
           <div className="p-5 bg-white border border-gray-200 rounded-2xl dark:border-gray-800 dark:bg-white/[0.03]">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Challenge Aktif</h3>
-              <a href="/member/challenge" className="text-sm font-medium text-brand-500 hover:text-brand-600">Lihat Semua</a>
+              <Link href="/member/challenge" className="text-sm font-medium text-brand-500 hover:text-brand-600">Lihat Semua</Link>
             </div>
             <div className="space-y-4">
               {challenges.slice(0, 2).map((challenge) => (

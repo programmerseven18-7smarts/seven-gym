@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dokumentasi Seven Gym Management System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Outfit", "sans-serif"] },
+          colors: {
+            brand: {
+              50: "#ecfdf5",
+              100: "#d1fae5",
+              500: "#10b981",
+              600: "#059669",
+              700: "#047857"
+            },
+            accent: {
+              50: "#eff6ff",
+              100: "#dbeafe",
+              500: "#0ea5e9",
+              600: "#0284c7"
+            },
+            background: "#f6f8fb",
+            dark: "#111827"
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background-color: theme("colors.background"); color: theme("colors.gray.800"); }
+    .sidebar-link.active {
+      background-color: theme("colors.brand.50");
+      color: theme("colors.brand.600");
+      border-right: 3px solid theme("colors.brand.500");
+      font-weight: 600;
+    }
+    h1, h2, h3, h4 { color: theme("colors.dark"); }
+    .doc-section h2 { font-size: 1.875rem; font-weight: 700; margin-bottom: 1.5rem; line-height: 1.2; }
+    .doc-section h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; border-bottom: 2px solid theme("colors.gray.100"); padding-bottom: 0.5rem; margin-bottom: 1rem; color: theme("colors.gray.700"); }
+    .doc-section h4 { font-size: 1rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+    .doc-section p { margin-bottom: 1rem; line-height: 1.65; color: theme("colors.gray.600"); }
+    .doc-section ul, .doc-section ol { margin-bottom: 1rem; padding-left: 1.5rem; color: theme("colors.gray.600"); }
+    .doc-section ul { list-style-type: disc; }
+    .doc-section ol { list-style-type: decimal; }
+    .doc-section li { margin-bottom: 0.5rem; line-height: 1.6; }
+    pre { background-color: theme("colors.gray.900"); color: theme("colors.gray.100"); padding: 1.25rem; border-radius: 0.5rem; overflow-x: auto; margin-bottom: 1.5rem; font-family: Consolas, Monaco, monospace; font-size: 0.875rem; line-height: 1.45; }
+    code { background-color: theme("colors.gray.100"); color: theme("colors.brand.600"); padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-size: 0.875em; }
+    pre code { background-color: transparent; color: inherit; padding: 0; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; background-color: white; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08); font-size: 0.875rem; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid theme("colors.gray.200"); vertical-align: top; }
+    th { background-color: theme("colors.gray.50"); font-weight: 600; color: theme("colors.gray.700"); }
+    tr:last-child td { border-bottom: none; }
+    .card { background-color: white; border-radius: 0.5rem; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04); margin-bottom: 1.5rem; }
+    .pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 0.35rem 0.7rem; background: theme("colors.brand.50"); color: theme("colors.brand.700"); font-size: 0.75rem; font-weight: 700; }
+    .flow-lane { display: grid; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .flow-node { border: 1px solid theme("colors.gray.200"); border-radius: 0.5rem; padding: 1rem; background: white; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04); }
+    .flow-node strong { display: block; color: theme("colors.dark"); margin-bottom: 0.35rem; }
+    .flow-node span { display: block; color: theme("colors.gray.500"); font-size: 0.875rem; line-height: 1.45; }
+    .flow-arrow { display: grid; place-items: center; color: theme("colors.brand.600"); font-weight: 800; }
+    .impact-tag { display: inline-flex; align-items: center; border-radius: 999px; padding: 0.2rem 0.55rem; background: theme("colors.accent.50"); color: theme("colors.accent.600"); font-size: 0.75rem; font-weight: 700; margin: 0.1rem; }
+    .fade-in { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body class="antialiased">
+
+  <div id="home-view" class="min-h-screen flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto w-full">
+      <div class="text-center mb-12">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-100 text-brand-600 mb-4">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.5 7.5h11M6.5 16.5h11M8 6v12m8-12v12M4 10h2m12 0h2M4 14h2m12 0h2"></path></svg>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-extrabold text-dark tracking-tight mb-4">Seven Gym Management System</h1>
+        <p class="text-xl text-gray-500 max-w-2xl mx-auto">Dokumentasi alur bisnis, struktur menu, role, data acuan, POS, operasional cabang, laporan, dan arah implementasi real project.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div onclick="openDoc('sec-01')" class="card cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all border-t-4 border-brand-500 group">
+          <div class="flex items-center justify-between mb-4"><span class="text-4xl font-black text-gray-200 group-hover:text-brand-100">01</span><span class="text-brand-500">Masuk</span></div>
+          <h2 class="text-xl font-bold text-dark mb-2 group-hover:text-brand-600">Gambaran Umum</h2>
+          <p class="text-gray-500 text-sm">Tujuan sistem, lingkup prototype, modul utama, dan prinsip desain aplikasi.</p>
+        </div>
+        <div onclick="openDoc('sec-02')" class="card cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all border-t-4 border-brand-500 group">
+          <div class="flex items-center justify-between mb-4"><span class="text-4xl font-black text-gray-200 group-hover:text-brand-100">02</span><span class="text-brand-500">Masuk</span></div>
+          <h2 class="text-xl font-bold text-dark mb-2 group-hover:text-brand-600">Alur Bisnis</h2>
+          <p class="text-gray-500 text-sm">Flow member, check-in, kelas, PT, POS, stok, notifikasi, dan laporan.</p>
+        </div>
+        <div onclick="openDoc('sec-03')" class="card cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all border-t-4 border-brand-500 group">
+          <div class="flex items-center justify-between mb-4"><span class="text-4xl font-black text-gray-200 group-hover:text-brand-100">03</span><span class="text-brand-500">Masuk</span></div>
+          <h2 class="text-xl font-bold text-dark mb-2 group-hover:text-brand-600">Struktur Menu</h2>
+          <p class="text-gray-500 text-sm">Menu final, submenu, fungsi halaman, dan role yang bisa mengakses.</p>
+        </div>
+        <div onclick="openDoc('sec-04')" class="card cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all border-t-4 border-brand-500 group">
+          <div class="flex items-center justify-between mb-4"><span class="text-4xl font-black text-gray-200 group-hover:text-brand-100">04</span><span class="text-brand-500">Masuk</span></div>
+          <h2 class="text-xl font-bold text-dark mb-2 group-hover:text-brand-600">Master & Setting</h2>
+          <p class="text-gray-500 text-sm">Cabang, paket membership, paket PT, metode pembayaran, dan template pesan.</p>
+        </div>
+        <div onclick="openDoc('sec-05')" class="card cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all border-t-4 border-accent-500 group">
+          <div class="flex items-center justify-between mb-4"><span class="text-4xl font-black text-gray-200 group-hover:text-accent-100">05</span><span class="text-accent-500">Masuk</span></div>
+          <h2 class="text-xl font-bold text-dark mb-2 group-hover:text-accent-600">POS & Pembayaran</h2>
+          <p class="text-gray-500 text-sm">Katalog POS, checkout, diskon, split payment, invoice, shift, void, dan audit.</p>
+        </div>
+        <div onclick="openDoc('sec-06')" class="card cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all border-t-4 border-accent-500 group">
+          <div class="flex items-center justify-between mb-4"><span class="text-4xl font-black text-gray-200 group-hover:text-accent-100">06</span><span class="text-accent-500">Masuk</span></div>
+          <h2 class="text-xl font-bold text-dark mb-2 group-hover:text-accent-600">Operasional</h2>
+          <p class="text-gray-500 text-sm">Check-in, kelas, personal trainer, produk, stok, supplier, dan maintenance alat.</p>
+        </div>
+        <div onclick="openDoc('sec-07')" class="card cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all border-t-4 border-accent-500 group">
+          <div class="flex items-center justify-between mb-4"><span class="text-4xl font-black text-gray-200 group-hover:text-accent-100">07</span><span class="text-accent-500">Masuk</span></div>
+          <h2 class="text-xl font-bold text-dark mb-2 group-hover:text-accent-600">Role & Data</h2>
+          <p class="text-gray-500 text-sm">Role owner, staff, trainer, member, branch access, permission, dan skema data real.</p>
+        </div>
+        <div onclick="openDoc('sec-08')" class="card cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all border-t-4 border-accent-500 group">
+          <div class="flex items-center justify-between mb-4"><span class="text-4xl font-black text-gray-200 group-hover:text-accent-100">08</span><span class="text-accent-500">Masuk</span></div>
+          <h2 class="text-xl font-bold text-dark mb-2 group-hover:text-accent-600">Laporan & Next Step</h2>
+          <p class="text-gray-500 text-sm">Kebutuhan laporan, export, integrasi WhatsApp, backend, API, dan migrasi dari dummy.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="doc-view" class="hidden h-screen flex overflow-hidden">
+    <aside class="w-64 bg-white border-r border-gray-200 flex-shrink-0 h-full overflow-y-auto hidden md:block">
+      <div class="p-6 sticky top-0 bg-white z-10 border-b border-gray-100 cursor-pointer" onclick="goHome()">
+        <h1 class="text-xl font-bold text-brand-600 flex items-center gap-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+          Kembali
+        </h1>
+      </div>
+      <nav class="p-4 space-y-1" id="sidebar-nav">
+        <button onclick="openDoc('sec-01')" data-target="sec-01" class="sidebar-link w-full text-left block px-4 py-3 text-sm rounded-lg text-gray-700 hover:bg-gray-50">01. Gambaran Umum</button>
+        <button onclick="openDoc('sec-02')" data-target="sec-02" class="sidebar-link w-full text-left block px-4 py-3 text-sm rounded-lg text-gray-700 hover:bg-gray-50">02. Alur Bisnis</button>
+        <button onclick="openDoc('sec-03')" data-target="sec-03" class="sidebar-link w-full text-left block px-4 py-3 text-sm rounded-lg text-gray-700 hover:bg-gray-50">03. Struktur Menu</button>
+        <button onclick="openDoc('sec-04')" data-target="sec-04" class="sidebar-link w-full text-left block px-4 py-3 text-sm rounded-lg text-gray-700 hover:bg-gray-50">04. Master & Setting</button>
+        <button onclick="openDoc('sec-05')" data-target="sec-05" class="sidebar-link w-full text-left block px-4 py-3 text-sm rounded-lg text-gray-700 hover:bg-gray-50">05. POS & Pembayaran</button>
+        <button onclick="openDoc('sec-06')" data-target="sec-06" class="sidebar-link w-full text-left block px-4 py-3 text-sm rounded-lg text-gray-700 hover:bg-gray-50">06. Operasional</button>
+        <button onclick="openDoc('sec-07')" data-target="sec-07" class="sidebar-link w-full text-left block px-4 py-3 text-sm rounded-lg text-gray-700 hover:bg-gray-50">07. Role & Data</button>
+        <button onclick="openDoc('sec-08')" data-target="sec-08" class="sidebar-link w-full text-left block px-4 py-3 text-sm rounded-lg text-gray-700 hover:bg-gray-50">08. Laporan & Next Step</button>
+      </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto bg-white p-6 md:p-12 relative">
+      <button onclick="goHome()" class="md:hidden flex items-center gap-2 text-brand-600 font-medium mb-6">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Kembali ke Beranda
+      </button>
+
+      <div class="max-w-4xl mx-auto pb-20 fade-in" id="content-container">
+        <div id="sec-01" class="doc-section hidden">
+          <span class="text-brand-500 font-bold tracking-wider text-sm uppercase">Bagian 1</span>
+          <h2>Gambaran Umum Sistem</h2>
+          <h3>1.1 Tujuan Project</h3>
+          <p><strong>Seven Gym Management System</strong> adalah aplikasi admin untuk mengelola operasional gym multi cabang dari pendaftaran member, check-in, kelas, personal trainer, POS, stok produk, promo, notifikasi, laporan, sampai role dan akses.</p>
+          <p>Versi saat ini adalah prototype dengan dummy data dinamis. Data dapat berubah di UI, tersimpan di localStorage untuk simulasi, dan alurnya dirancang supaya nanti bisa dipindah ke backend real tanpa mengubah pola kerja besar.</p>
+
+          <h3>1.2 Komponen Utama</h3>
+          <table>
+            <thead><tr><th>Komponen</th><th>Isi</th><th>Fungsi</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Admin Dashboard</strong></td><td>Next.js, TypeScript, Tailwind</td><td>Antarmuka operasional owner, staff, trainer, dan portal member.</td></tr>
+              <tr><td><strong>Prototype Data</strong></td><td>React Context + localStorage</td><td>Simulasi database, CRUD, invoice, queue WhatsApp, audit log, dan pengaturan.</td></tr>
+              <tr><td><strong>Role Session</strong></td><td>Dummy login user</td><td>Menentukan menu, branch access, permission, dan action yang boleh dipakai.</td></tr>
+              <tr><td><strong>POS</strong></td><td>Katalog + checkout modal</td><td>Menjual membership, paket PT, dan produk gym dari satu layar kasir.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>1.3 Prinsip Desain</h3>
+          <ul>
+            <li>Halaman data utama memakai tabel di desktop dan berubah menjadi card ketika mobile.</li>
+            <li>Form tambah/edit CRUD memakai popup responsif, bukan form panjang di bawah tabel.</li>
+            <li>Detail data berpindah ke halaman lanjutan, bukan panel kecil di samping tabel.</li>
+            <li>Menu mengikuti role dan permission, bukan sekadar disembunyikan manual.</li>
+            <li>Multi cabang berada di satu company Seven Gym; branch access menentukan cabang yang bisa dipakai user.</li>
+          </ul>
+        </div>
+
+        <div id="sec-02" class="doc-section hidden">
+          <span class="text-brand-500 font-bold tracking-wider text-sm uppercase">Bagian 2</span>
+          <h2>Alur Bisnis Utama</h2>
+          <h3>2.1 Flow Member Baru</h3>
+<pre><code>Staff login
+  -> pilih cabang aktif
+  -> tambah member
+  -> pilih paket membership
+  -> transaksi POS atau invoice
+  -> pembayaran berhasil
+  -> membership aktif
+  -> member bisa check-in dan booking kelas/PT</code></pre>
+          <div class="flow-lane">
+            <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr] gap-3 items-stretch">
+              <div class="flow-node border-l-4 border-l-brand-500"><strong>1. Registrasi</strong><span>Data member, kontak, status, paket, dan home branch dibuat.</span></div>
+              <div class="flow-arrow">-></div>
+              <div class="flow-node border-l-4 border-l-brand-500"><strong>2. Pembayaran</strong><span>Kasir memilih item POS, promo, metode bayar, lalu sistem membuat transaksi dan invoice.</span></div>
+              <div class="flow-arrow">-></div>
+              <div class="flow-node border-l-4 border-l-brand-500"><strong>3. Aktivasi</strong><span>Member aktif, dapat QR check-in, point loyalty, dan histori kunjungan.</span></div>
+            </div>
+          </div>
+
+          <h3>2.2 Flow Operasional Harian</h3>
+          <ol>
+            <li>Staff memilih cabang aktif sesuai branch access user.</li>
+            <li>Member datang dan discan lewat menu Check-In.</li>
+            <li>Jika membership aktif dan cabang diizinkan, member masuk ke daftar sedang gym.</li>
+            <li>Booking kelas dan booking PT dibuat dari menu operasional atau dari alur kasir.</li>
+            <li>Produk yang dijual melalui POS mengurangi stok cabang.</li>
+            <li>Reminder WhatsApp masuk ke queue otomatis berdasarkan trigger.</li>
+          </ol>
+
+          <h3>2.3 Flow Laporan</h3>
+          <p>Owner membuka laporan untuk melihat pendapatan, member aktif, retensi, performa trainer, kelas, produk, dan kehadiran. Data laporan mengambil ringkasan dari transaksi POS, invoice, check-in, kelas, PT, dan inventory.</p>
+        </div>
+
+        <div id="sec-03" class="doc-section hidden">
+          <span class="text-brand-500 font-bold tracking-wider text-sm uppercase">Bagian 3</span>
+          <h2>Struktur Menu Final</h2>
+          <h3>3.1 Menu Back Office</h3>
+          <table>
+            <thead><tr><th>Menu</th><th>Submenu</th><th>Fungsi</th><th>Role</th></tr></thead>
+            <tbody>
+              <tr><td>Dashboard</td><td>-</td><td>KPI cabang, pendapatan, aktivitas, stok, booking, dan alert.</td><td>Owner, Staff</td></tr>
+              <tr><td>Member</td><td>Data Member, Membership, Histori Kunjungan, Progress, Referral</td><td>Kelola lifecycle member dari daftar sampai retensi.</td><td>Owner, Staff</td></tr>
+              <tr><td>Check-In</td><td>Scan QR, Member Sedang Gym, Histori, Member Tidak Aktif</td><td>Validasi masuk gym, checkout, dan monitoring kehadiran.</td><td>Owner, Staff</td></tr>
+              <tr><td>Kelas Gym</td><td>Jadwal, Booking, Kapasitas & Waiting List, Absensi</td><td>Kelola kelas group, peserta, kapasitas, waiting list, dan absensi.</td><td>Owner, Staff</td></tr>
+              <tr><td>Personal Trainer</td><td>Data Trainer, Jadwal, Booking PT, Client, Performa / Komisi</td><td>Kelola trainer, jadwal, client, target, rating, dan komisi.</td><td>Owner, Staff terbatas</td></tr>
+              <tr><td>Kasir & Pembayaran</td><td>POS, Invoice, Histori Transaksi, Shift Kasir, Void / Refund</td><td>Penjualan, invoice, close shift, void transaksi, dan audit kasir.</td><td>Owner, Staff</td></tr>
+              <tr><td>Produk & Stok</td><td>Data Produk, Stok, Barang Masuk, Barang Keluar, Supplier, Maintenance Alat</td><td>Inventory produk retail dan inspeksi alat gym.</td><td>Owner, Staff terbatas</td></tr>
+              <tr><td>Promo & Loyalty</td><td>Promo Gym, Point & Reward, Referral Program, Challenge Bulanan</td><td>Campaign promo, point, reward, referral, dan challenge.</td><td>Owner</td></tr>
+              <tr><td>WhatsApp & Notifikasi</td><td>Reminder Membership, Latihan/PT, Kelas, Broadcast, Ulang Tahun</td><td>Template pesan, queue, status kirim, retry, dan broadcast.</td><td>Owner, Staff terbatas</td></tr>
+              <tr><td>Laporan</td><td>Overview, Pendapatan, Member, Trainer, Kelas, Produk, Kehadiran, Analisa Gym</td><td>Ringkasan manajemen dan export data.</td><td>Owner</td></tr>
+              <tr><td>Pengaturan</td><td>Profil Gym, Cabang, Paket Membership, Paket PT, Metode Pembayaran, Template Pesan, Data Dummy</td><td>Data acuan sistem dan konfigurasi prototype.</td><td>Owner</td></tr>
+              <tr><td>Role & Akses</td><td>User & Staff, Role, Matrix Akses, Audit Log</td><td>Kontrol user, permission, branch access, dan histori aksi.</td><td>Owner</td></tr>
+            </tbody>
+          </table>
+
+          <h3>3.2 Menu Trainer</h3>
+          <ul>
+            <li><strong>Dashboard Trainer:</strong> ringkasan sesi, client, jadwal, dan target.</li>
+            <li><strong>Jadwal PT:</strong> sesi trainer yang sedang dijadwalkan.</li>
+            <li><strong>Client Trainer:</strong> daftar client dan detail progress.</li>
+            <li><strong>Progress Client:</strong> program latihan, catatan, dan tracking progres.</li>
+            <li><strong>Target & Komisi:</strong> target bulanan, sesi selesai, estimasi komisi.</li>
+          </ul>
+          <h3>3.3 Menu Member</h3>
+          <table>
+            <thead><tr><th>Group</th><th>Submenu</th><th>Fungsi</th></tr></thead>
+            <tbody>
+              <tr><td>Beranda Member</td><td>Beranda, Membership Saya, QR Check-In, Jadwal Hari Ini, Promo Gym, Progress Saya</td><td>Portal mandiri member untuk melihat status membership, QR, promo, dan progres latihan.</td></tr>
+              <tr><td>Jadwal & Booking</td><td>Booking Kelas, Booking Trainer, Jadwal Kelas, Jadwal Saya</td><td>Reservasi kelas, booking personal trainer, dan melihat jadwal pribadi.</td></tr>
+              <tr><td>Pembayaran & Loyalty</td><td>Pembayaran Saya, Point & Reward, Referral Saya, Profile Saya</td><td>Histori pembayaran, point, reward, referral, dan profil member.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div id="sec-04" class="doc-section hidden">
+          <span class="text-brand-500 font-bold tracking-wider text-sm uppercase">Bagian 4</span>
+          <h2>Master Data & Pengaturan</h2>
+          <p>Menu Pengaturan dipakai sebagai pusat data acuan. Dalam prototype, pengaturan ini sudah memengaruhi alur lain, misalnya paket membership masuk ke form member dan POS, metode pembayaran masuk ke checkout POS, serta template pesan dipakai queue WhatsApp.</p>
+
+          <h3>4.1 Data Acuan</h3>
+          <table>
+            <thead><tr><th>Data</th><th>Dipakai Oleh</th><th>Catatan Real Project</th></tr></thead>
+            <tbody>
+              <tr><td>Cabang</td><td>Dashboard, member, check-in, POS, inventory, laporan</td><td>Perlu company_id dan branch access per user.</td></tr>
+              <tr><td>Paket Membership</td><td>Tambah member, renewal, POS, invoice</td><td>Perlu durasi, harga, benefit, status aktif, dan pajak bila ada.</td></tr>
+              <tr><td>Paket PT</td><td>Booking PT, POS, komisi trainer</td><td>Perlu jumlah sesi, harga/sesi, masa berlaku, dan rule expired.</td></tr>
+              <tr><td>Metode Pembayaran</td><td>POS, invoice, shift kasir, laporan pendapatan</td><td>Perlu settlement, fee, akun bank, status, dan reconciliation.</td></tr>
+              <tr><td>Template Pesan</td><td>Reminder, broadcast, ulang tahun, queue WhatsApp</td><td>Perlu provider WhatsApp API, variable template, dan delivery status.</td></tr>
+              <tr><td>Data Dummy</td><td>Prototype</td><td>Import/export JSON dan reset seed per modul.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>4.2 Aturan CRUD</h3>
+          <ul>
+            <li>Tambah dan edit data dilakukan lewat popup responsif.</li>
+            <li>Detail data dibuka ke halaman lanjutan agar tabel tetap bersih.</li>
+            <li>Delete memakai konfirmasi dan menulis audit log.</li>
+            <li>Status aktif/nonaktif berpengaruh ke pilihan dropdown di alur operasional.</li>
+          </ul>
+        </div>
+
+        <div id="sec-05" class="doc-section hidden">
+          <span class="text-brand-500 font-bold tracking-wider text-sm uppercase">Bagian 5</span>
+          <h2>POS & Pembayaran</h2>
+          <h3>5.1 Alur Checkout POS</h3>
+<pre><code>Pilih member atau walk-in
+  -> pilih tab Membership / PT / Produk
+  -> tambah item ke keranjang
+  -> klik Bayar
+  -> popup checkout terbuka
+  -> pilih promo/diskon/metode pembayaran/split payment
+  -> konfirmasi bayar
+  -> transaksi + invoice dibuat
+  -> receipt muncul
+  -> stok produk dan promo usage ikut berubah</code></pre>
+
+          <h3>5.2 Komponen POS</h3>
+          <table>
+            <thead><tr><th>Area</th><th>Isi</th><th>Perilaku</th></tr></thead>
+            <tbody>
+              <tr><td>Katalog</td><td>Membership, paket PT, produk</td><td>Foto real fitness, card produk, low stock badge, dan fullscreen mode.</td></tr>
+              <tr><td>Keranjang</td><td>Member, item, qty, subtotal</td><td>Kasir bisa tambah/kurang qty dan hapus item.</td></tr>
+              <tr><td>Checkout Popup</td><td>Promo, diskon manual, metode bayar, split payment</td><td>Muncul setelah klik Bayar agar tampilan utama POS tidak penuh form.</td></tr>
+              <tr><td>Receipt</td><td>Invoice, item, total, metode bayar</td><td>Bisa print, download, dan mulai transaksi baru.</td></tr>
+              <tr><td>Shift Kasir</td><td>Open shift, expected cash, counted cash</td><td>Close shift mencatat selisih kas dan audit log.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>5.3 Permission</h3>
+          <p>POS membutuhkan permission <code>pos.view</code> untuk melihat halaman dan <code>pos.create</code> atau <code>payments.create</code> untuk membuat transaksi. Selain itu cash shift harus aktif agar tombol bayar bisa dipakai.</p>
+        </div>
+
+        <div id="sec-06" class="doc-section hidden">
+          <span class="text-brand-500 font-bold tracking-wider text-sm uppercase">Bagian 6</span>
+          <h2>Operasional Gym</h2>
+          <h3>6.1 Check-In</h3>
+          <ul>
+            <li>Scan QR member melakukan validasi membership aktif, status freeze/expired, dan akses cabang.</li>
+            <li>Member yang sedang gym tampil di live list dan bisa checkout.</li>
+            <li>Histori check-in dipakai untuk laporan kehadiran dan trigger member tidak aktif.</li>
+          </ul>
+
+          <h3>6.2 Kelas Gym</h3>
+          <ul>
+            <li>Jadwal kelas menyimpan nama kelas, trainer/instruktur, jam, ruangan, kapasitas, dan status.</li>
+            <li>Booking kelas mencatat peserta, status booked/waitlist/attended/cancelled.</li>
+            <li>Waiting list bisa dipromote ketika ada peserta batal.</li>
+          </ul>
+
+          <h3>6.3 Personal Trainer</h3>
+          <ul>
+            <li>Data trainer berisi profil, cabang, spesialisasi, rate, rating, target sesi, dan komisi.</li>
+            <li>Booking PT mencatat member, trainer, tanggal, jam, durasi, fokus latihan, dan status sesi.</li>
+            <li>Trainer memiliki portal sendiri untuk jadwal, client, program, dan komisi.</li>
+          </ul>
+
+          <h3>6.4 Produk & Maintenance</h3>
+          <p>Inventory memisahkan data produk, stok cabang, barang masuk, barang keluar, supplier, dan maintenance alat. Penjualan produk dari POS mengurangi stok, sedangkan barang masuk/keluar menjadi catatan movement.</p>
+        </div>
+
+        <div id="sec-07" class="doc-section hidden">
+          <span class="text-brand-500 font-bold tracking-wider text-sm uppercase">Bagian 7</span>
+          <h2>Role, Akses, dan Data Real</h2>
+          <h3>7.1 Role Default</h3>
+          <table>
+            <thead><tr><th>Role</th><th>Akses</th><th>Contoh User</th></tr></thead>
+            <tbody>
+              <tr><td>Owner / Admin</td><td>Semua cabang, laporan, pengaturan, role akses, promo, dan audit log.</td><td>owner@sevengym.id</td></tr>
+              <tr><td>Staff</td><td>Operasional cabang: member, check-in, kelas, PT booking, POS, pembayaran, stok terbatas.</td><td>staff@sevengym.id</td></tr>
+              <tr><td>Personal Trainer</td><td>Portal trainer: jadwal, client, progress, program, target, dan komisi sendiri.</td><td>dimas@sevengym.id</td></tr>
+              <tr><td>Member</td><td>Portal member: membership saya, QR check-in, jadwal, booking, pembayaran, point, reward, referral, dan profile.</td><td>andi@email.com</td></tr>
+            </tbody>
+          </table>
+
+          <h3>7.2 Struktur Data Real</h3>
+<pre><code>Company
+  -> Branch
+  -> User
+  -> Role
+  -> Permission
+  -> UserBranchAccess
+
+Member
+  -> MembershipSubscription
+  -> CheckIn
+  -> ClassBooking
+  -> PtSession
+  -> LoyaltyPoint
+
+POS
+  -> Transaction
+  -> TransactionItem
+  -> Invoice
+  -> Payment
+  -> CashShift
+
+Inventory
+  -> Product
+  -> StockByBranch
+  -> StockMovement
+  -> Supplier
+  -> EquipmentMaintenance</code></pre>
+
+          <h3>7.3 Enforcement Permission</h3>
+          <p>Di prototype, permission sudah memengaruhi sidebar dan tombol action. Di real project, permission harus dicek ulang di server action/API supaya user tidak bisa mengeksekusi aksi dari luar UI.</p>
+          <div>
+            <span class="impact-tag">Sidebar access</span>
+            <span class="impact-tag">Button action</span>
+            <span class="impact-tag">Server guard</span>
+            <span class="impact-tag">Audit log</span>
+            <span class="impact-tag">Branch scope</span>
+          </div>
+        </div>
+
+        <div id="sec-08" class="doc-section hidden">
+          <span class="text-brand-500 font-bold tracking-wider text-sm uppercase">Bagian 8</span>
+          <h2>Laporan & Next Step</h2>
+          <h3>8.1 Laporan Utama</h3>
+          <table>
+            <thead><tr><th>Laporan</th><th>Sumber Data</th><th>Output</th></tr></thead>
+            <tbody>
+              <tr><td>Pendapatan</td><td>Transaction, Invoice, Payment</td><td>Revenue harian/bulanan, metode bayar, status invoice.</td></tr>
+              <tr><td>Member</td><td>Member, Membership, CheckIn</td><td>Aktif, expired, freeze, churn risk, referral, progress.</td></tr>
+              <tr><td>Trainer</td><td>Trainer, PtSession, Commission</td><td>Sesi selesai, target, rating, komisi.</td></tr>
+              <tr><td>Kelas</td><td>ClassSchedule, ClassBooking</td><td>Okupansi, waiting list, absensi, kelas favorit.</td></tr>
+              <tr><td>Produk</td><td>Inventory, StockMovement, TransactionItem</td><td>Stok, low stock, penjualan produk, margin awal.</td></tr>
+              <tr><td>Kehadiran</td><td>CheckIn</td><td>Jam ramai, member aktif, branch traffic.</td></tr>
+            </tbody>
+          </table>
+
+          <h3>8.2 Migrasi dari Prototype ke Real</h3>
+          <ol>
+            <li>Ganti localStorage/context menjadi database PostgreSQL.</li>
+            <li>Buat schema Prisma untuk company, branch, user, member, transaction, inventory, class, PT, dan notification.</li>
+            <li>Pindahkan CRUD popup ke server action/API dengan permission guard.</li>
+            <li>Tambahkan auth real: login, logout, token/session, refresh, dan branch selection.</li>
+            <li>Integrasikan WhatsApp provider untuk queue, delivery status, retry, dan template approval.</li>
+            <li>Tambahkan test untuk role access, POS checkout, stock movement, dan invoice.</li>
+          </ol>
+
+          <h3>8.3 Catatan Prioritas</h3>
+          <ul>
+            <li>POS dan payment harus paling stabil karena memengaruhi revenue dan stok.</li>
+            <li>Branch access harus konsisten di setiap query agar staff cabang tidak melihat data cabang lain.</li>
+            <li>Audit log wajib untuk action sensitif: void/refund, role change, delete data, status payment, dan close shift.</li>
+            <li>Export laporan bisa dimulai dari CSV/JSON, lalu ditambah PDF jika format final sudah jelas.</li>
+          </ul>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function openDoc(id) {
+      document.getElementById("home-view").classList.add("hidden");
+      document.getElementById("doc-view").classList.remove("hidden");
+
+      document.querySelectorAll(".doc-section").forEach(function(section) {
+        section.classList.add("hidden");
+      });
+      document.getElementById(id).classList.remove("hidden");
+
+      document.querySelectorAll(".sidebar-link").forEach(function(link) {
+        link.classList.toggle("active", link.dataset.target === id);
+      });
+
+      document.querySelector("main").scrollTo(0, 0);
+      window.location.hash = id;
+    }
+
+    function goHome() {
+      document.getElementById("doc-view").classList.add("hidden");
+      document.getElementById("home-view").classList.remove("hidden");
+      window.location.hash = "";
+    }
+
+    window.addEventListener("load", function() {
+      const hash = window.location.hash.replace("#", "");
+      if (hash && document.getElementById(hash)) {
+        openDoc(hash);
+      }
+    });
+  </script>
+</body>
+</html>

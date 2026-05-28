@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { trainers, bookings, members } from "@/data/mockData";
+import Link from "next/link";
+import { trainers, members } from "@/data/mockData";
 import Badge from "@/components/ui/badge/Badge";
 import Image from "next/image";
 import { ArrowUpIcon } from "@/icons";
@@ -8,12 +9,6 @@ import { ArrowUpIcon } from "@/icons";
 const TrainerDashboard: React.FC = () => {
   // Simulate current trainer
   const currentTrainer = trainers[0];
-  const trainerBookings = bookings.filter(
-    (b) => b.targetId === currentTrainer.id && b.type === "pt"
-  );
-  const trainerClients = members.filter((m) =>
-    bookings.some((b) => b.memberId === m.id && b.targetId === currentTrainer.id)
-  );
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("id-ID", {
@@ -285,7 +280,7 @@ const TrainerDashboard: React.FC = () => {
       <div className="p-5 bg-white border border-gray-200 rounded-2xl dark:border-gray-800 dark:bg-white/[0.03]">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Client Aktif</h3>
-          <a href="/trainer/clients" className="text-sm font-medium text-brand-500 hover:text-brand-600">Lihat Semua</a>
+          <Link href="/trainer/clients" className="text-sm font-medium text-brand-500 hover:text-brand-600">Lihat Semua</Link>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
