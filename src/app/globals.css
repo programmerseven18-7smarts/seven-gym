@@ -783,5 +783,27 @@ span.flatpickr-weekday,
   box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.1),
     0 1px 2px 0 rgba(16, 24, 40, 0.06);
   opacity: 0.8;
-  cursor: grabbing; /* Changes the cursor to indicate dragging */
+  cursor: grabbing;
+}
+
+/* System Flow Timeline Animations */
+@keyframes sf-flow-dash {
+  to { stroke-dashoffset: -24; }
+}
+@keyframes sf-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--sf-glow, rgba(16,185,129,0.4)); }
+  50% { box-shadow: 0 0 0 10px transparent; }
+}
+@keyframes sf-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.sf-dash-active {
+  animation: sf-flow-dash 0.8s linear infinite;
+}
+.sf-pulse {
+  animation: sf-pulse-glow 2s ease-in-out infinite;
+}
+.sf-fade {
+  animation: sf-fade-up 0.35s ease-out both;
 }

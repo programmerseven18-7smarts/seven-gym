@@ -1100,6 +1100,8 @@ export default function GymPrototypePage({ slug }: GymPrototypePageProps) {
   const moduleName = slug[0] ?? "dashboard";
   const title = navItem?.name ?? toTitle(slug.at(-1) ?? moduleName);
   const parent = navItem?.parent ?? toTitle(moduleName);
+  const [selectedFlowId, setSelectedFlowId] = React.useState("member-journey");
+  const [selectedFlowStep, setSelectedFlowStep] = React.useState(0);
   const [trainerRows, setTrainerRows] = usePrototypeLocalState<TrainerRow[]>(
     "seven-gym-prototype-trainers-v1",
     mockTrainers,
@@ -5944,6 +5946,467 @@ export default function GymPrototypePage({ slug }: GymPrototypePageProps) {
     </div>
   );
 
+  const renderSystemFlow = () => {
+    const activeMembers = branchSnapshot.scopedMembers.filter(
+      (member) => member.membershipStatus === "active",
+    ).length;
+    const pendingInvoices = invoiceRows.filter((invoice) => invoice.status !== "sent").length;
+    const queuedMessages = whatsappMessages.filter(
+      (message) => message.branchId === activeBranch.id && message.status === "queued",
+    ).length;
+
+    const systemFlows = [
+      {
+        id: "member-journey",
+        title: "Member Journey",
+        subtitle: "Dari daftar member sampai progress latihan.",
+        icon: <MemberIcon className="h-5 w-5" />,
+        tone: "emerald" as const,
+        metric: `${activeMembers} aktif`,
+        steps: [
+          {
+            title: "Registrasi",
+            module: "Member / Data Member",
+            actor: "Receptionist atau Owner",
+            input: "Profil, kontak, cabang, referral",
+            output: "Member ID, akses cabang, histori awal",
+            detail: "Data member dibuat sekali, lalu dipakai oleh membership, check-in, kelas, PT, promo, dan laporan.",
+          },
+          {
+            title: "Pilih Paket",
+            module: "Paket Membership",
+            actor: "Kasir atau Owner",
+            input: "Paket, durasi, harga, promo",
+            output: "Membership aktif atau pending bayar",
+            detail: "Sistem membaca master paket dan promo aktif sebelum membuat invoice membership.",
+          },
+          {
+            title: "Pembayaran",
+            module: "Kasir & Invoice",
+            actor: "Kasir",
+            input: "Metode bayar, diskon, pajak",
+            output: "Invoice paid, audit pembayaran",
+            detail: "Setelah invoice lunas, status membership otomatis siap dipakai untuk QR check-in dan booking.",
+          },
+          {
+            title: "Check-In",
+            module: "Scan QR Check-In",
+            actor: "Front desk",
+            input: "QR member, cabang aktif",
+            output: "Kunjungan live, attendance log",
+            detail: "Validasi mengecek membership aktif, akses cabang, freeze, expired, dan duplikasi scan.",
+          },
+          {
+            title: "Progress",
+            module: "Progress Member",
+            actor: "Trainer atau Staff",
+            input: "Berat, BMI, catatan latihan",
+            output: "Grafik progress dan insight retensi",
+            detail: "Progress member tersambung ke jadwal PT, histori kunjungan, dan analisa member.",
+          },
+        ],
+      },
+      {
+        id: "pos-payment",
+        title: "POS & Pembayaran",
+        subtitle: "Alur kasir dari cart sampai laporan pendapatan.",
+        icon: <CashRegisterIcon className="h-5 w-5" />,
+        tone: "amber" as const,
+        metric: `${pendingInvoices} pending`,
+        steps: [
+          {
+            title: "Pilih Item",
+            module: "POS / Kasir",
+            actor: "Kasir",
+            input: "Membership, PT, produk",
+            output: "Cart transaksi",
+            detail: "Cart POS menggabungkan layanan gym dan produk stok dalam satu proses checkout.",
+          },
+          {
+            title: "Promo",
+            module: "Promo Gym",
+            actor: "Kasir",
+            input: "Kode promo, point, referral",
+            output: "Diskon tervalidasi",
+            detail: "Promo aktif dari modul Promo & Loyalty bisa dipakai sebelum pembayaran final.",
+          },
+          {
+            title: "Bayar",
+            module: "Metode Pembayaran",
+            actor: "Kasir",
+            input: "Cash, transfer, QRIS, kartu",
+            output: "Invoice dan receipt",
+            detail: "Popup bayar menjadi pusat input metode pembayaran, catatan, diskon, dan konfirmasi transaksi.",
+          },
+          {
+            title: "Update Data",
+            module: "Member, PT, Stok",
+            actor: "Sistem",
+            input: "Invoice paid",
+            output: "Membership aktif, stok berkurang",
+            detail: "Transaksi yang selesai otomatis memperbarui modul terkait sesuai tipe item yang dibayar.",
+          },
+          {
+            title: "Laporan",
+            module: "Laporan Pendapatan",
+            actor: "Owner",
+            input: "Transaksi dan shift kasir",
+            output: "Omzet, margin, rekonsiliasi",
+            detail: "Owner melihat pendapatan per cabang, metode pembayaran, kasir, promo, dan periode.",
+          },
+        ],
+      },
+      {
+        id: "class-trainer",
+        title: "Kelas & Trainer",
+        subtitle: "Jadwal, booking, absensi, komisi, dan rating.",
+        icon: <TrainerIcon className="h-5 w-5" />,
+        tone: "sky" as const,
+        metric: `${branchSnapshot.scopedClasses.length} kelas`,
+        steps: [
+          {
+            title: "Buat Jadwal",
+            module: "Jadwal Kelas / Trainer",
+            actor: "Owner atau Staff",
+            input: "Trainer, room, slot, kapasitas",
+            output: "Slot tersedia",
+            detail: "Jadwal menjadi acuan booking member, attendance kelas, dan kalender trainer.",
+          },
+          {
+            title: "Booking",
+            module: "Booking Kelas / PT",
+            actor: "Member atau Staff",
+            input: "Member, slot, paket aktif",
+            output: "Booking confirmed atau waiting list",
+            detail: "Sistem mengecek membership, kapasitas, bentrok jadwal, dan kuota paket PT.",
+          },
+          {
+            title: "Absensi",
+            module: "Absensi Kelas",
+            actor: "Trainer",
+            input: "Daftar booking hadir",
+            output: "Attendance log",
+            detail: "Absensi menjadi bukti kelas berjalan dan dasar performa trainer.",
+          },
+          {
+            title: "Komisi",
+            module: "Komisi Trainer",
+            actor: "Owner",
+            input: "Sesi selesai, paket PT",
+            output: "Estimasi payout",
+            detail: "Komisi dihitung dari sesi selesai, target trainer, paket, dan kebijakan cabang.",
+          },
+          {
+            title: "Rating",
+            module: "Rating Trainer",
+            actor: "Member",
+            input: "Review dan score",
+            output: "Kualitas layanan",
+            detail: "Rating membantu owner melihat trainer paling produktif dan area yang perlu ditingkatkan.",
+          },
+        ],
+      },
+      {
+        id: "backoffice-control",
+        title: "Backoffice Control",
+        subtitle: "Master, cabang, akses, audit, dan insight owner.",
+        icon: <ShieldIcon className="h-5 w-5" />,
+        tone: "rose" as const,
+        metric: `${queuedMessages} WA queue`,
+        steps: [
+          {
+            title: "Master Data",
+            module: "Pengaturan",
+            actor: "Owner",
+            input: "Paket, cabang, metode bayar",
+            output: "Acuan transaksi",
+            detail: "Master data adalah sumber aturan untuk transaksi, booking, POS, notifikasi, dan laporan.",
+          },
+          {
+            title: "Role Akses",
+            module: "Role & Akses",
+            actor: "Owner",
+            input: "User, role, matrix permission",
+            output: "Menu dan action terkontrol",
+            detail: "Akses tidak hanya mengatur sidebar, tapi juga aksi seperti edit, delete, export, dan approval.",
+          },
+          {
+            title: "Cabang",
+            module: "Branch Access",
+            actor: "Owner",
+            input: "Cabang aktif, user access",
+            output: "Data scoped per cabang",
+            detail: "Owner bisa pindah cabang, sedangkan staff hanya melihat cabang yang diberikan.",
+          },
+          {
+            title: "Audit",
+            module: "Audit Log",
+            actor: "Sistem",
+            input: "Aksi CRUD dan approval",
+            output: "Jejak perubahan",
+            detail: "Setiap aksi penting dicatat agar prototype siap diarahkan ke backend real.",
+          },
+          {
+            title: "Analisa",
+            module: "Analisa Gym",
+            actor: "Owner",
+            input: "Member, transaksi, attendance",
+            output: "Insight operasional",
+            detail: "Laporan menggabungkan performa member, pendapatan, kelas, trainer, stok, dan notifikasi.",
+          },
+        ],
+      },
+    ];
+
+    const selectedFlow = systemFlows.find((flow) => flow.id === selectedFlowId) ?? systemFlows[0]!;
+    const selectedStep = selectedFlow.steps[selectedFlowStep] ?? selectedFlow.steps[0]!;
+
+    return (
+      <div className="space-y-6">
+        {/* ── Flow Category Tabs ── */}
+        <div className="flex flex-wrap gap-2 rounded-xl border border-gray-200 bg-white/80 p-2 backdrop-blur dark:border-gray-800 dark:bg-white/[0.03]">
+          {systemFlows.map((flow) => {
+            const active = flow.id === selectedFlow.id;
+            return (
+              <button
+                key={flow.id}
+                type="button"
+                onClick={() => { setSelectedFlowId(flow.id); setSelectedFlowStep(0); }}
+                className={`flex items-center gap-2.5 rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
+                  active
+                    ? `${toneClass[flow.tone]} shadow-sm`
+                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-white/[0.05]"
+                }`}
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg">{flow.icon}</span>
+                <span className="hidden sm:inline">{flow.title}</span>
+                <StatusPill tone={active ? flow.tone : "slate"}>{flow.metric}</StatusPill>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ── Interactive Pipeline Timeline ── */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+          <div className="mb-8 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${toneClass[selectedFlow.tone]}`}>
+                {selectedFlow.icon}
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{selectedFlow.title}</h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{selectedFlow.subtitle}</p>
+              </div>
+            </div>
+            <StatusPill tone={selectedFlow.tone}>{selectedFlow.steps.length} langkah</StatusPill>
+          </div>
+
+          {/* Horizontal Timeline */}
+          <div className="relative overflow-x-auto pb-2 -mx-2 px-2">
+            <div className="flex items-start min-w-[700px]">
+              {selectedFlow.steps.map((step, index) => {
+                const isActive = index === selectedFlowStep;
+                const isPast = index < selectedFlowStep;
+                const isLast = index === selectedFlow.steps.length - 1;
+                const glowMap = { emerald: "rgba(16,185,129,0.35)", amber: "rgba(245,158,11,0.35)", sky: "rgba(14,165,233,0.35)", rose: "rgba(244,63,94,0.35)" };
+                const solidMap = { emerald: "bg-emerald-500", amber: "bg-amber-500", sky: "bg-sky-500", rose: "bg-rose-500" };
+                const ringMap = { emerald: "ring-emerald-500/30", amber: "ring-amber-500/30", sky: "ring-sky-500/30", rose: "ring-rose-500/30" };
+                const strokeMap = { emerald: "stroke-emerald-500", amber: "stroke-amber-500", sky: "stroke-sky-500", rose: "stroke-rose-500" };
+                const fillMap = { emerald: "fill-emerald-500", amber: "fill-amber-500", sky: "fill-sky-500", rose: "fill-rose-500" };
+
+                return (
+                  <React.Fragment key={step.title}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFlowStep(index)}
+                      className="group relative flex flex-1 flex-col items-center text-center"
+                    >
+                      <div
+                        className={`relative z-10 flex h-14 w-14 items-center justify-center rounded-full border-2 font-bold text-lg transition-all duration-300 ${
+                          isActive
+                            ? `border-transparent ${solidMap[selectedFlow.tone]} text-white shadow-xl ring-4 ${ringMap[selectedFlow.tone]} sf-pulse`
+                            : isPast
+                            ? `border-transparent ${solidMap[selectedFlow.tone]} text-white opacity-70`
+                            : "border-gray-200 bg-white text-gray-400 group-hover:border-gray-300 group-hover:shadow-md dark:border-gray-700 dark:bg-gray-900 dark:text-gray-500"
+                        }`}
+                        style={isActive ? { "--sf-glow": glowMap[selectedFlow.tone] } as React.CSSProperties : undefined}
+                      >
+                        {isPast ? (
+                          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          String(index + 1).padStart(2, "0")
+                        )}
+                      </div>
+                      <p className={`mt-3 text-sm font-semibold transition-colors ${isActive ? "text-gray-900 dark:text-white" : "text-gray-500 dark:text-gray-400"}`}>
+                        {step.title}
+                      </p>
+                      <p className="mt-0.5 text-xs text-gray-400 dark:text-gray-500 max-w-[120px] truncate">{step.module}</p>
+                      {isActive && <div className={`mt-2 h-1.5 w-8 rounded-full ${solidMap[selectedFlow.tone]} sf-fade`} />}
+                    </button>
+
+                    {!isLast && (
+                      <div className="relative flex-1 min-w-[40px] pt-6 px-1">
+                        <svg className="w-full h-6 overflow-visible" viewBox="0 0 100 10" preserveAspectRatio="none">
+                          <line x1="0" y1="5" x2="100" y2="5" stroke="currentColor" strokeWidth="2" className="text-gray-200 dark:text-gray-700" />
+                          {(isPast || isActive) && (
+                            <line x1="0" y1="5" x2="100" y2="5" strokeWidth="2.5"
+                              className={strokeMap[selectedFlow.tone]}
+                              strokeDasharray="6 4"
+                              style={isActive ? { animation: "sf-flow-dash 0.8s linear infinite" } : undefined}
+                            />
+                          )}
+                          <polygon points="95,1 100,5 95,9"
+                            className={isPast || isActive ? fillMap[selectedFlow.tone] : "fill-gray-300 dark:fill-gray-600"}
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="mt-6 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800">
+            <div
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                selectedFlow.tone === "emerald" ? "bg-emerald-500" : selectedFlow.tone === "amber" ? "bg-amber-500" : selectedFlow.tone === "sky" ? "bg-sky-500" : "bg-rose-500"
+              }`}
+              style={{ width: `${((selectedFlowStep + 1) / selectedFlow.steps.length) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* ── Step Detail - Data Pipeline ── */}
+        <div className="sf-fade grid gap-6 xl:grid-cols-[0.9fr_1.1fr]" key={`detail-${selectedFlow.id}-${selectedFlowStep}`}>
+          {/* Left: Step Card */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+            <div className="flex items-start gap-4">
+              <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-white text-xl font-bold shadow-lg bg-gradient-to-br ${
+                selectedFlow.tone === "emerald" ? "from-emerald-400 to-emerald-600" : selectedFlow.tone === "amber" ? "from-amber-400 to-amber-600" : selectedFlow.tone === "sky" ? "from-sky-400 to-sky-600" : "from-rose-400 to-rose-600"
+              }`}>
+                {String(selectedFlowStep + 1).padStart(2, "0")}
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">Step {selectedFlowStep + 1} / {selectedFlow.steps.length}</p>
+                <h3 className="mt-1 text-xl font-bold text-gray-900 dark:text-white">{selectedStep.title}</h3>
+                <div className="mt-2"><StatusPill tone={selectedFlow.tone}>{selectedStep.actor}</StatusPill></div>
+              </div>
+            </div>
+            <p className="mt-5 text-sm leading-relaxed text-gray-600 dark:text-gray-300">{selectedStep.detail}</p>
+            <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900/60">
+              <p className="text-xs font-semibold uppercase text-gray-400">Modul Terkait</p>
+              <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-white">{selectedStep.module}</p>
+            </div>
+            <div className="mt-5 flex gap-2">
+              <button type="button" disabled={selectedFlowStep === 0} onClick={() => setSelectedFlowStep(selectedFlowStep - 1)}
+                className="flex h-9 flex-1 items-center justify-center gap-1.5 rounded-lg border border-gray-200 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800">
+                <svg className="h-4 w-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
+                Sebelumnya
+              </button>
+              <button type="button" disabled={selectedFlowStep === selectedFlow.steps.length - 1} onClick={() => setSelectedFlowStep(selectedFlowStep + 1)}
+                className={`flex h-9 flex-1 items-center justify-center gap-1.5 rounded-lg text-sm font-semibold text-white transition disabled:opacity-30 disabled:cursor-not-allowed bg-gradient-to-r shadow-md ${
+                  selectedFlow.tone === "emerald" ? "from-emerald-500 to-emerald-600 shadow-emerald-500/20" : selectedFlow.tone === "amber" ? "from-amber-500 to-amber-600 shadow-amber-500/20" : selectedFlow.tone === "sky" ? "from-sky-500 to-sky-600 shadow-sky-500/20" : "from-rose-500 to-rose-600 shadow-rose-500/20"
+                }`}>
+                Selanjutnya
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" /></svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Right: Data Flow Pipeline */}
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03]">
+              <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-400">Alur Data</h4>
+              {/* Input */}
+              <div className="rounded-xl border border-sky-200 bg-sky-50/50 p-4 dark:border-sky-500/20 dark:bg-sky-500/[0.06]">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-100 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">Data Masuk</span>
+                </div>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{selectedStep.input}</p>
+              </div>
+              {/* Arrow down */}
+              <div className="flex justify-center py-1.5">
+                <svg className={`h-7 w-7 ${selectedFlow.tone === "emerald" ? "text-emerald-500" : selectedFlow.tone === "amber" ? "text-amber-500" : selectedFlow.tone === "sky" ? "text-sky-500" : "text-rose-500"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7" /></svg>
+              </div>
+              {/* Module Process */}
+              <div className={`rounded-xl border-2 p-4 ${
+                selectedFlow.tone === "emerald" ? "border-emerald-300 bg-emerald-50/50 dark:border-emerald-500/30 dark:bg-emerald-500/[0.08]" : selectedFlow.tone === "amber" ? "border-amber-300 bg-amber-50/50 dark:border-amber-500/30 dark:bg-amber-500/[0.08]" : selectedFlow.tone === "sky" ? "border-sky-300 bg-sky-50/50 dark:border-sky-500/30 dark:bg-sky-500/[0.08]" : "border-rose-300 bg-rose-50/50 dark:border-rose-500/30 dark:bg-rose-500/[0.08]"
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${toneClass[selectedFlow.tone]}`}>
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><circle cx="12" cy="12" r="3" /></svg>
+                  </div>
+                  <span className={`text-xs font-bold uppercase tracking-wider ${selectedFlow.tone === "emerald" ? "text-emerald-700 dark:text-emerald-400" : selectedFlow.tone === "amber" ? "text-amber-700 dark:text-amber-400" : selectedFlow.tone === "sky" ? "text-sky-700 dark:text-sky-400" : "text-rose-700 dark:text-rose-400"}`}>Proses Modul</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">{selectedStep.module}</p>
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Aktor:</span>
+                  <StatusPill tone={selectedFlow.tone}>{selectedStep.actor}</StatusPill>
+                </div>
+              </div>
+              {/* Arrow down */}
+              <div className="flex justify-center py-1.5">
+                <svg className={`h-7 w-7 ${selectedFlow.tone === "emerald" ? "text-emerald-500" : selectedFlow.tone === "amber" ? "text-amber-500" : selectedFlow.tone === "sky" ? "text-sky-500" : "text-rose-500"}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12l7 7 7-7" /></svg>
+              </div>
+              {/* Output */}
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 dark:border-emerald-500/20 dark:bg-emerald-500/[0.06]">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Data Dihasilkan</span>
+                </div>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{selectedStep.output}</p>
+              </div>
+            </div>
+            {/* System Impact */}
+            <div className="rounded-2xl border border-brand-200 bg-brand-50 p-4 dark:border-brand-500/25 dark:bg-brand-500/[0.08]">
+              <div className="flex items-start gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-brand-700 dark:bg-white/[0.08] dark:text-brand-300">
+                  <TrendingUpIcon className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900 dark:text-white">Dampak ke sistem</p>
+                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                    Step ini mengalir ke dashboard owner, audit log, dan laporan cabang
+                    {activeBranch.name ? ` ${activeBranch.name}` : ""}.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Connection Summary ── */}
+        <SectionPanel title="Ringkasan Koneksi Modul" subtitle="Pemetaan cepat supaya alur prototype mudah dibaca sebelum backend dibuat.">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {[
+              { label: "Data pusat", value: "Member, cabang, paket, produk", icon: <PackageIcon className="h-5 w-5" />, tone: "emerald" as const },
+              { label: "Transaksi", value: "POS, invoice, shift, refund", icon: <CreditCardIcon className="h-5 w-5" />, tone: "amber" as const },
+              { label: "Operasional", value: "Check-in, kelas, PT, stok", icon: <DumbbellIcon className="h-5 w-5" />, tone: "sky" as const },
+              { label: "Kontrol owner", value: "Role, audit, laporan, analisa", icon: <ReportIcon className="h-5 w-5" />, tone: "rose" as const },
+            ].map((item) => (
+              <div key={item.label} className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]">
+                <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${toneClass[item.tone]}`}>{item.icon}</div>
+                <p className="mt-4 text-sm font-semibold text-gray-900 dark:text-white">{item.label}</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{item.value}</p>
+              </div>
+            ))}
+          </div>
+        </SectionPanel>
+      </div>
+    );
+  };
+
+
+
   const renderOperations = () => {
     const operationKey = slug.at(-1);
 
@@ -10477,6 +10940,7 @@ export default function GymPrototypePage({ slug }: GymPrototypePageProps) {
   );
 
   const renderBody = () => {
+    if (moduleName === "system-flow" || parent === "Alur Sistem") return renderSystemFlow();
     if (moduleName === "member") return renderMemberPortal();
     if (moduleName === "trainer") return renderTrainerPortal();
     if (moduleName === "members" || parent === "Member") return renderMemberAdmin();

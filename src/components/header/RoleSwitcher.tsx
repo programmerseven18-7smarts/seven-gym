@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   mockLoginUsers,
   roleLabels,
@@ -51,6 +52,7 @@ const RoleSwitcher: React.FC = () => {
   } = useRole();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -128,6 +130,9 @@ const RoleSwitcher: React.FC = () => {
                 onClick={() => {
                   loginAsUser(user.id);
                   setIsOpen(false);
+                  if (user.role === "owner") {
+                    router.push("/system-flow");
+                  }
                 }}
                 className={`flex w-full items-center gap-3 rounded-lg px-3 py-3 transition-colors ${
                   currentUser.id === user.id

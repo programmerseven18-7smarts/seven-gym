@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   mockLoginUsers,
   roleLabels,
@@ -11,6 +12,7 @@ import { DumbbellIcon, ShieldIcon } from "@/icons/gym-icons";
 
 export default function DummyLoginPanel() {
   const { loginAsUser } = useRole();
+  const router = useRouter();
 
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-950">
@@ -21,11 +23,18 @@ export default function DummyLoginPanel() {
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500">
                 <DumbbellIcon className="h-7 w-7" />
               </div>
-              <h1 className="mt-8 text-3xl font-bold">Seven Gym</h1>
-              <p className="mt-3 text-sm leading-6 text-gray-300">
+              <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400 border border-emerald-500/20">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Demo Aplikasi
+              </div>
+              <h1 className="mt-4 text-3xl font-bold">Seven Gym</h1>
+              {/* <p className="mt-3 text-sm leading-6 text-gray-300">
                 Prototype login dengan session dummy. Role, permission, dan cabang
                 aktif akan mengikuti user yang dipilih.
-              </p>
+              </p> */}
+              <div className="mt-4 rounded-lg bg-white/[0.03] border border-white/[0.08] p-3 text-xs text-gray-400">
+                <strong className="text-white">Informasi Demo:</strong> Aplikasi ini dirancang untuk simulasi & evaluasi sistem manajemen gym modern. Seluruh data bersifat mock / dummy.
+              </div>
             </div>
             <div className="mt-10 grid gap-3">
               {mockBranches.map((branch) => (
@@ -64,7 +73,12 @@ export default function DummyLoginPanel() {
               {mockLoginUsers.map((user) => (
                 <button
                   key={user.id}
-                  onClick={() => loginAsUser(user.id)}
+                  onClick={() => {
+                    loginAsUser(user.id);
+                    if (user.role === "owner") {
+                      router.push("/system-flow");
+                    }
+                  }}
                   className="rounded-xl border border-gray-200 p-4 text-left transition hover:border-emerald-300 hover:bg-emerald-50 dark:border-gray-800 dark:hover:bg-emerald-500/10"
                 >
                   <div className="flex items-start gap-3">

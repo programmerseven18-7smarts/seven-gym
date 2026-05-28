@@ -43,6 +43,13 @@ const allSystemRoles: UserRole[] = ["owner", "staff", "trainer", "member"];
 
 export const mainNavItems: NavItem[] = [
   {
+    icon: <ClipboardIcon className="h-5 w-5" />,
+    name: "Alur Sistem",
+    path: "/system-flow",
+    requiredAny: ["dashboard.view"],
+    requiredRolesAny: ownerOnly,
+  },
+  {
     icon: <DumbbellIcon className="h-5 w-5" />,
     name: "Dashboard",
     path: "/",
